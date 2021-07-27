@@ -1,7 +1,10 @@
 import React, { FC } from 'react';
 import {
   ApolloClient,
-  ApolloProvider, useQuery, gql, InMemoryCache,
+  ApolloProvider,
+  useQuery,
+  gql,
+  InMemoryCache,
 } from '@apollo/client';
 import { useGeolocation } from 'react-use';
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -52,7 +55,7 @@ const Weather: FC = () => {
   if (!data) return <Chip label="Weather not found" />;
   const { locationName, description, temperatureinCelsius } = data.getWeatherForLocation;
 
-  return <Chip label={`Weather in ${locationName}: ${description} and ${toF(temperatureinCelsius)}°`} />;
+  return <Chip label={`Weather in ${locationName}: ${description} and ${Math.round(toF(temperatureinCelsius))}°`} />;
 };
 
 export default () => (

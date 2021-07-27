@@ -23,7 +23,7 @@ module.exports = {
   settings: {
     react: {
       pragma: 'React',
-      version: '16.18',
+      version: '17',
     },
   },
   plugins: ['react'],
@@ -35,7 +35,7 @@ module.exports = {
     'import/prefer-default-export': 'off',
     'no-param-reassign': 'off',
     'arrow-parens': [0, { requireForBlockBody: false }],
-    'jsx-quotes': ['error', 'prefer-double'],
+    'jsx-quotes': 'off',
     'react/jsx-one-expression-per-line': 'off',
   },
 };
