@@ -7,24 +7,35 @@ module.exports = {
     node: true,
   },
   parser: '@typescript-eslint/parser', // Specifies the ESLint parser
-  extends: [
-    'airbnb',
-    'plugin:prettier/recommended', // Enables eslint-plugin-prettier and displays prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
-  ],
+  extends: ['airbnb-typescript'],
   globals: {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly',
   },
   parserOptions: {
+    project: 'tsconfig.json',
     ecmaFeatures: {
       jsx: true,
     },
     ecmaVersion: 2018,
     sourceType: 'module',
   },
+  settings: {
+    react: {
+      pragma: 'React',
+      version: '17',
+    },
+  },
   plugins: ['react'],
   rules: {
-    quotes: ['error', 'double'],
-    '@typescript-eslint/no-angle-bracket-type-assertion': 'off',
+    'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx', '.tsx'] }],
+    'react/prop-types': 'off',
+    'react/require-default-props': 'off',
+    'import/no-unresolved': 'off',
+    'import/prefer-default-export': 'off',
+    'no-param-reassign': 'off',
+    'arrow-parens': [0, { requireForBlockBody: false }],
+    'jsx-quotes': 'off',
+    'react/jsx-one-expression-per-line': 'off',
   },
 };
