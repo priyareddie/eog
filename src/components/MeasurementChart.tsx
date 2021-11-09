@@ -5,6 +5,7 @@ import React from 'react';
 import { Line as LineChart } from 'react-chartjs-2';
 import client from '../graphql';
 import { multipleMeasurementsQuery, newMeasurementQuery } from '../graphql/query';
+import ValueCard from './ValueCard';
 
 interface Props {
   instruments: string[];
@@ -23,6 +24,10 @@ const styles = makeStyles({
   alignCenter: {
     display: 'flex',
     justifyContent: 'center',
+  },
+  realtimeValues: {
+    display: 'flex',
+    margin: '8px 20px',
   },
 });
 
@@ -83,18 +88,30 @@ const MeasurementChart: React.FC<Props> = ({ instruments }: Props) => {
   };
 
   return (
-    <LineChart
-      height={500}
-      width={1000}
-      data={chartData}
-      options={{
-        elements: {
-          point: {
-            radius: 0,
+    <div>
+      <div className={classes.realtimeValues}>
+        {getMultipleMeasurements?.map((instrument: any) => (
+          <ValueCard
+            label={instrument.metric}
+            color={lineColor[instrument.metric]}
+            value={instrument.measurements.at(-1).value}
+          />
+        ))}
+      </div>
+      <LineChart
+        height={500}
+        width={1000}
+        data={chartData}
+        options={{
+          elements: {
+            point: {
+              radius: 0,
+            },
           },
-        },
-      }}
-    />
+        }}
+      />
+    </div>
+
   );
 };
 
