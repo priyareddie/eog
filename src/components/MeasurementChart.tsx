@@ -5,6 +5,7 @@ import React from 'react';
 import { Line as LineChart } from 'react-chartjs-2';
 import client from '../graphql';
 import { multipleMeasurementsQuery, newMeasurementQuery } from '../graphql/query';
+import { Instrument, Measurement } from '../types';
 import ValueCard from './ValueCard';
 
 interface Props {
@@ -57,7 +58,7 @@ const MeasurementChart: React.FC<Props> = ({ instruments }: Props) => {
         const { newMeasurement } = d;
 
         const getMultipleMeasurements = originalData.getMultipleMeasurements
-          .reduce((array: any[], instrument: any) => {
+          .reduce((array: Instrument[], instrument: Instrument) => {
             if (newMeasurement.metric === instrument.metric) {
               return array.concat({
                 ...instrument,
@@ -78,10 +79,10 @@ const MeasurementChart: React.FC<Props> = ({ instruments }: Props) => {
   const getMultipleMeasurements = data?.getMultipleMeasurements;
 
   const chartData = {
-    labels: getMultipleMeasurements[0]?.measurements.map((measurement: any) => moment(measurement.at).format('HH:mm')),
-    datasets: getMultipleMeasurements?.map((instrument: any) => ({
+    labels: getMultipleMeasurements[0]?.measurements.map((measurement: Measurement) => moment(measurement.at).format('HH:mm')),
+    datasets: getMultipleMeasurements?.map((instrument: Instrument) => ({
       label: instrument.metric,
-      data: instrument.measurements.map(({ value }: any) => value),
+      data: instrument.measurements.map(({ value }: Measurement) => value),
       borderColor: lineColor[instrument.metric],
       borderWidth: 1,
     })),
@@ -90,11 +91,11 @@ const MeasurementChart: React.FC<Props> = ({ instruments }: Props) => {
   return (
     <div>
       <div className={classes.realtimeValues}>
-        {getMultipleMeasurements?.map((instrument: any) => (
+        {getMultipleMeasurements?.map((instrument: Instrument) => (
           <ValueCard
             label={instrument.metric}
             color={lineColor[instrument.metric]}
-            value={instrument.measurements.at(-1).value}
+            value={(instrument.measurements as any).at(-1).value}
           />
         ))}
       </div>
