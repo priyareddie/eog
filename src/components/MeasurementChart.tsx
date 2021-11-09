@@ -4,7 +4,7 @@ import moment from 'moment';
 import React from 'react';
 import { Line as LineChart } from 'react-chartjs-2';
 import client from '../graphql';
-import { multipleMeasurementsQuery } from '../graphql/query';
+import { multipleMeasurementsQuery, newMeasurementQuery } from '../graphql/query';
 
 interface Props {
   instruments: string[];
@@ -31,7 +31,7 @@ const MeasurementChart: React.FC<Props> = ({ instruments }: Props) => {
   const classes = styles();
 
   React.useEffect(() => {
-    const after = new Date().valueOf() - 1800000;
+    const after = new Date().valueOf() - 600000;
     const data = instruments.map((instrument) => ({
       metricName: instrument,
       after,
@@ -39,16 +39,38 @@ const MeasurementChart: React.FC<Props> = ({ instruments }: Props) => {
     setSelections(data as any);
   }, [instruments]);
 
-  const { data, loading } = useQuery(
+  const { data, loading, subscribeToMore } = useQuery(
     multipleMeasurementsQuery,
     { variables: { instruments: selections } },
   );
+
+  React.useEffect(() => {
+    subscribeToMore({
+      document: newMeasurementQuery,
+      updateQuery: (originalData, { subscriptionData: { data: d } }) => {
+        if (!d || !originalData?.getMultipleMeasurements?.length) return originalData;
+        const { newMeasurement } = d;
+
+        const getMultipleMeasurements = originalData.getMultipleMeasurements
+          .reduce((array: any[], instrument: any) => {
+            if (newMeasurement.metric === instrument.metric) {
+              return array.concat({
+                ...instrument,
+                measurements: [...instrument.measurements, newMeasurement],
+              });
+            }
+            return array.concat(instrument);
+          }, []);
+        return { getMultipleMeasurements };
+      },
+    });
+  }, [subscribeToMore]);
 
   if (!instruments.length) return <div className={classes.alignCenter}>No Instrument Selected</div>;
 
   if (loading) return <div className={classes.alignCenter}><CircularProgress /></div>;
 
-  const { getMultipleMeasurements } = data || {};
+  const getMultipleMeasurements = data?.getMultipleMeasurements;
 
   const chartData = {
     labels: getMultipleMeasurements[0]?.measurements.map((measurement: any) => moment(measurement.at).format('HH:mm')),
