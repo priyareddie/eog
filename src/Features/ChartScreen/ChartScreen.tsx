@@ -2,6 +2,7 @@ import { ApolloProvider, useQuery } from '@apollo/client';
 import { makeStyles } from '@material-ui/core';
 import React from 'react';
 import Select from 'react-select';
+import MeasurementChart from '../../components/MeasurementChart';
 import client from '../../graphql';
 import { metricQuery } from '../../graphql/query';
 
@@ -19,7 +20,7 @@ export const ChartScreen: React.FC = () => {
   const { data } = useQuery(metricQuery);
 
   React.useEffect(() => {
-    setOptions(data.getMetrics.map((op: string) => ({
+    setOptions(data?.getMetrics.map((op: string) => ({
       label: op,
       value: op,
     })));
@@ -28,6 +29,8 @@ export const ChartScreen: React.FC = () => {
   const handleSelectChange = React.useCallback((val) => {
     setSelectedOptions(val);
   }, [selectedOptions]);
+
+  const instruments = selectedOptions.map((op: any) => op.value);
 
   return (
     <div>
@@ -38,6 +41,7 @@ export const ChartScreen: React.FC = () => {
         options={options}
         onChange={handleSelectChange}
       />
+      <MeasurementChart instruments={instruments} />
     </div>
   );
 };

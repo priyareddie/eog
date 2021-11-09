@@ -7,8 +7,8 @@ export const metricQuery = gql`
 `;
 
 export const multipleMeasurementsQuery = gql`
-  query ($metrics: [MeasurementQuery]) {
-    getMultipleMeasurements(input: $metrics) {
+  query ($instruments: [MeasurementQuery]) {
+    getMultipleMeasurements(input: $instruments) {
       metric
       measurements {
         value
