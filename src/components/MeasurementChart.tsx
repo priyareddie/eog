@@ -1,5 +1,5 @@
 import { ApolloProvider, useQuery } from '@apollo/client';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress, makeStyles } from '@material-ui/core';
 import moment from 'moment';
 import React from 'react';
 import { Line as LineChart } from 'react-chartjs-2';
@@ -19,8 +19,17 @@ const lineColor: Record<string, string> = {
   casingPressure: '#01feff',
 };
 
+const styles = makeStyles({
+  alignCenter: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
+});
+
 const MeasurementChart: React.FC<Props> = ({ instruments }: Props) => {
   const [selections, setSelections] = React.useState([]);
+  const classes = styles();
+
   React.useEffect(() => {
     const after = new Date().valueOf() - 1800000;
     const data = instruments.map((instrument) => ({
@@ -35,9 +44,9 @@ const MeasurementChart: React.FC<Props> = ({ instruments }: Props) => {
     { variables: { instruments: selections } },
   );
 
-  if (!instruments.length) return <div>No Instrument Selected</div>;
+  if (!instruments.length) return <div className={classes.alignCenter}>No Instrument Selected</div>;
 
-  if (loading) return <div><CircularProgress /></div>;
+  if (loading) return <div className={classes.alignCenter}><CircularProgress /></div>;
 
   const { getMultipleMeasurements } = data || {};
 
